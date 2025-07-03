@@ -4,6 +4,15 @@ import pandas as pd
 
 st.set_page_config(layout="wide")
 
+firebase_config = {
+    "apiKey": "temp#1",
+    "authDomain": "temp#2",
+    "projectId": "temp#3",
+    "storageBucket": "temp#4",
+    "messagingSenderId": "temp#5",
+    "appId": "temp#6",
+}
+
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Jost&display=swap" rel="stylesheet">
     <style>
@@ -14,11 +23,23 @@ st.markdown("""
         }
         html, body, [data-testid="stAppViewContainer"] {
             background-color: #413F42;
-            overflow: hidden;
             height: 100vh;
         }
     </style>
+    
+    <script src="link#1temp#7"></script>
+
+    <script>
+        const firebaseConfig = {firebase_config};
+        firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+        #rest functionality
+    </script>
 """, unsafe_allow_html=True)
+
+st.markdown("""
+    <div style="height: 5vh"></div>
+    """, unsafe_allow_html=True)
 
 info_row = st.columns([1, 1, 1, 1])
 
@@ -88,28 +109,28 @@ graph_row = st.columns([1,1,1])
 
 with graph_row[0]:
     st.markdown("""
-        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 1vh; margin-left: 9vh; height: 27vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
+        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 1vh; margin-left: 9vh; height: 25vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
         </div>
     """, unsafe_allow_html=True)
     st.markdown("""
-        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 2vh; margin-left: 9vh; height: 27vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
+        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 2vh; margin-left: 9vh; height: 25vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
         </div>
     """, unsafe_allow_html=True)
 
 with graph_row[1]:
     st.markdown("""
-        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 1vh; margin-left: 0vh; height: 27vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
+        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 1vh; margin-left: 0vh; height: 25vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
         </div>
     """, unsafe_allow_html=True)
     st.markdown("""
-        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 2vh; margin-left: 0vh; height: 27vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
+        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 2vh; margin-left: 0vh; height: 25vh; width: 50vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
         </div>
     """, unsafe_allow_html=True)
     # st.line_chart(data1)
 
 with graph_row[2]:
     st.markdown("""
-        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 5vh; margin-left: -7vh; height: 48vh; width: 59vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
+        <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-top: 3vh; margin-left: -7vh; height: 48vh; width: 59vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9">
             <span style="height: 36vh; width: 36vh; background-color: #E55050; border-radius: 50%; display: inline-block"></span>
         </div>
     """, unsafe_allow_html=True)
