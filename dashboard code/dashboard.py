@@ -1,17 +1,34 @@
 import streamlit as st
 import pandas as pd
+import firebase_admin
+from firebase_admin import credentials, firestore
 
 
 st.set_page_config(layout="wide")
 
-firebase_config = {
-    "apiKey": "temp#1",
-    "authDomain": "temp#2",
-    "projectId": "temp#3",
-    "storageBucket": "temp#4",
-    "messagingSenderId": "temp#5",
-    "appId": "temp#6",
-}
+import json
+if not firebase_admin._apps:
+    firebase_json = st.secrets["firebase_json"]
+    cred_dict = json.loads(firebase_json)
+    cred = credentials.Certificate(cred_dict)
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
+doc_ref = db.collection('patients').document('patient1')
+doc_ref.set({
+    'name': 'test',
+    'age': 20,
+    'test_graph': [10, 20, 30]
+})
+db.collection("patients").add({
+    "name": "test2",
+    "age": 45
+})
+
+
+doc = db.collection('patients').document('patient1').get()
+st.write(doc.to_dict())
 
 st.markdown("""
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Jost&display=swap" rel="stylesheet">
@@ -26,15 +43,6 @@ st.markdown("""
             height: 100vh;
         }
     </style>
-    
-    <script src="link#1temp#7"></script>
-
-    <script>
-        const firebaseConfig = {firebase_config};
-        firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-        #rest functionality
-    </script>
 """, unsafe_allow_html=True)
 
 st.markdown("""
