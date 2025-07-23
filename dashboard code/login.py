@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import requests
 from urllib.parse import parse_qs
 import streamlit as st
+import base64
 
 st.set_page_config(layout="wide")
 
@@ -23,16 +24,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
-st.markdown("""
-    <div style="height: 10vh"></div>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <div style="border: 0px; padding: 2vh; border-radius: 3vh; height: 28vh; width: 28vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9;">
-            <span style="height: 21vh; width: 21vh; background-color: #E55050; border-radius: 50%; display: inline-block"></span>
+with st.container():
+    with open("profile.png", "rb") as img_file:
+        profile_img_b64 = base64.b64encode(img_file.read()).decode()
+    st.markdown(f"""
+        <div style="height: 10vh"></div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="border: 0px; padding: 2vh; border-radius: 3vh; height: 28vh; width: 28vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9;">
+                <img src='data:image/png;base64,{profile_img_b64}' alt="Profile Icon" style="width: 21vh; height: 21vh; border-radius: 50%; object-fit: contain; display: inline-block;" />
+            </div>
+            <div style="height: 4vh"></div>
         </div>
-        <div style="height: 4vh"></div>
-    </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 if 'user' not in st.session_state:
     st.session_state['user'] = None
