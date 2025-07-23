@@ -1,6 +1,8 @@
 import streamlit as st
-from streamlit_javascript import st_javascript
-import base64
+import streamlit.components.v1 as components
+import requests
+from urllib.parse import parse_qs
+import streamlit as st
 
 st.set_page_config(layout="wide")
 
@@ -21,6 +23,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
 st.markdown("""
     <div style="height: 10vh"></div>
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -31,57 +34,136 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-with st.container():
-    with open("username.png", "rb") as img_file:
-        username_img_b64 = base64.b64encode(img_file.read()).decode()
-    with open("password.png", "rb") as img_file:
-        password_img_b64 = base64.b64encode(img_file.read()).decode()
+if 'user' not in st.session_state:
+    st.session_state['user'] = None
 
-    st.markdown(f"""
-        <div id="login-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-            <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-bottom: 2vh; height: 8.5vh; width: 80vh; display: flex; align-items: center; background: linear-gradient(90deg, #C7C2C2 0 10vh, #D9D9D9 10vh 100%); position: relative;">
-                <div style="position: absolute; left: 2vh; top: 50%; transform: translateY(-50%); width: 6vh; height: 6vh; display: flex; align-items: center; justify-content: center;">
-                    <img src='data:image/png;base64,{username_img_b64}' alt="username" style="width: 4vh; height: 4vh; object-fit: contain;" />
-                </div>
-                <input id="username" type="text" placeholder="Username" style="flex: 1; height: 100%; font-size: 2vh; border: none; background: transparent; outline: none; font-family: 'Jost', sans-serif; text-align: left; margin-left: 10vh; padding-left: 0;"/>
-            </div>
-            <div style="border: 0px; padding: 2vh; border-radius: 2vh; margin-bottom: 2vh; height: 8.5vh; width: 80vh; display: flex; align-items: center; background: linear-gradient(90deg, #C7C2C2 0 10vh, #D9D9D9 10vh 100%); position: relative;">
-                <div style="position: absolute; left: 2vh; top: 50%; transform: translateY(-50%); width: 6vh; height: 6vh; display: flex; align-items: center; justify-content: center;">
-                    <img src='data:image/png;base64,{password_img_b64}' alt="password" style="width: 4vh; height: 4vh; object-fit: contain;" />
-                </div>
-                <input id="password" type="password" placeholder="Password" style="flex: 1; height: 100%; font-size: 2vh; border: none; background: transparent; outline: none; font-family: 'Jost', sans-serif; text-align: left; margin-left: 10vh; padding-left: 0;"/>
-            </div>
-            <div style="width: 80vh; display: flex; align-items: center; justify-content: space-between; margin-bottom: 2vh;">
-                <div style="display: flex; align-items: center;">
-                    <input type="checkbox" id="remember-me" style="width: 2.5vh; height: 2.5vh; margin-right: 1vh; margin-left: 1vh;" />
-                    <label for="remember-me" style="font-size: 1.8vh; color: #fff; font-family: 'Jost', sans-serif; font-weight: 500;">Remember Me</label>
-                </div>
-                <a href="#" style="font-size: 1.8vh; color: #FFFFFF; font-family: 'Jost', sans-serif; cursor: pointer; font-weight: 500; text-decoration: none;">Forgot Password</a>
-            </div>
-            <div style="height:5vh"></div>
-            <button id="login-btn" style="width: 18vh; height: 6vh; font-size: 2vh; border: none; background: #E55050; color: white; border-radius: 2vh; font-family: 'Jost', sans-serif; cursor: pointer;">Login</button>
-        </div>
-    """, unsafe_allow_html=True)
 
-js_code = """
-() => {
-    return new Promise((resolve) => {
-        const button = document.getElementById("login-btn");
-        if (button) {
-            button.onclick = () => {
-                const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
-                resolve({username, password});
-            };
+if st.session_state['user'] is None:
+    firebase_config = {
+        "apiKey": "AIzaSyCB3LoIGAWQGzyRqDfZP0kqa-BACi0wStE",
+        "authDomain": "grippyanalytics.firebaseapp.com",
+        "projectId": "grippyanalytics",
+        "appId": "1:764735496082:web:65169b2aba175c8ff76b4b"
+    }
+    col = st.columns([1,1,1])
+    with col[1]:
+        email = st.text_input("Email", key="email_input", label_visibility="collapsed", placeholder="Email")
+        password = st.text_input("Password", type="password", key="password_input", label_visibility="collapsed", placeholder="Password")
+        col2 = st.columns([1,1,1])
+        with col2[1]:
+            st.markdown("""
+                <style>
+                .stButton > button {
+                    background-color: #E55050;
+                    color: white;
+                    border-radius: 3vh;
+                    height: 5vh;
+                    font-size: 1.2rem;
+                    margin-left: 6vh;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+            login_btn = st.button("Login", key="login_btn")
+        with col2[2]:
+            google_btn_html = f'''
+            <style>
+                #google-login-btn {{
+                    background-color: #fff;
+                    color: #444;
+                    border: 1px solid #ccc;
+                    border-radius: 3vh;
+                    height: 5vh;
+                    font-size: 0.7rem;
+                    width: 100%;
+                    cursor: pointer;
+                    margin-top: 2.4vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5em;
+                }}
+                #google-login-btn:hover {{
+                    background-color: #f5f5f5;
+                }}
+            </style>
+            <button id="google-login-btn">
+                Sign in with Google
+            </button>
+            <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+            <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+            <script>
+              var firebaseConfig = {firebase_config};
+              if (!window.firebaseAppsInit) {{
+                firebase.initializeApp(firebaseConfig);
+                window.firebaseAppsInit = true;
+              }}
+              function googleLogin() {{
+                var provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider).then(function(result) {{
+                  const user = result.user;
+                  const params = new URLSearchParams({{
+                    'firebase-login': '1',
+                    'email': user.email,
+                    'name': user.displayName
+                  }});
+                  window.location.search = params.toString();
+                }}).catch(function(error) {{
+                  alert('Google login failed: ' + error.message);
+                }});
+              }}
+              document.addEventListener('DOMContentLoaded', function() {{
+                var btn = document.getElementById('google-login-btn');
+                if (btn) btn.onclick = googleLogin;
+              }});
+            </script>
+            '''
+            components.html(google_btn_html, height=700)
+
+    if login_btn:
+        print("Login button clicked")
+        FIREBASE_API_KEY = "AIzaSyCB3LoIGAWQGzyRqDfZP0kqa-BACi0wStE"
+        FIREBASE_AUTH_URL = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
+        payload = {
+            "email": email,
+            "password": password,
+            "returnSecureToken": True
         }
-    });
-}
-"""
+        resp = requests.post(FIREBASE_AUTH_URL, json=payload)
+        print(f"response: {resp.request.body}")
+        print(f"Response text: {resp.text}")
+        print(f"Response status code: {resp.status_code}")
+        if resp.status_code == 200:
+            data = resp.json()
+            st.session_state['user'] = {
+                'email': data.get('email'),
+                'idToken': data.get('idToken'),
+                'localId': data.get('localId')
+            }
+            st.success(f"Login successful! Welcome, {data.get('email')}")
+            st.experimental_rerun()
+        else:
+            error = resp.json().get('error', {}).get('message', 'Login failed')
+            st.error(f"Login failed: {error}")
+else:
+    st.success(f"Logged in as: {st.session_state['user']['email']}")
+    if st.session_state['user']['email'] == 'admin@example.com':
+        st.header("Admin Dashboard")
+        st.write("Welcome, admin! You have access to admin features.")
+    else:
+        st.header("User Dashboard")
+        st.write(f"Welcome, {st.session_state['user']['email']}! This is your dashboard.")
 
-result = st_javascript(js_code, key="login_script")
 
-if result and "username" in result and "password" in result:
-    st.success("Form submitted!")
-    st.write("Username:", result["username"])
-    st.write("Password:", result["password"])
-    print("Password:", result["password"])
+
+query_params = st.query_params
+if 'firebase-login' in query_params:
+    email = query_params.get('email', [None])[0]
+    name = query_params.get('name', [None])[0]
+    if email:
+        st.session_state['user'] = {
+            'email': email,
+            'name': name,
+            'provider': 'google'
+        }
+        st.success(f"Google login successful! Welcome, {name or email}")
+        st.experimental_rerun()
