@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import firebase_admin
@@ -6,10 +7,15 @@ import requests
 import datetime
 import matplotlib.pyplot as plt
 import re
+import os
 
 
-PATIENT_ID = "P00052"
 st.set_page_config(layout="wide")
+
+if 'selected_patient_id' in st.session_state and st.session_state['selected_patient_id']:
+    PATIENT_ID = st.session_state['selected_patient_id']
+else:
+    PATIENT_ID = "P00052"
 
 
 def reverse_geocode(lat, lon):
@@ -35,7 +41,7 @@ def days_without_issue(ts):
         return 'N/A'
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(r"C:\Users\muham\Desktop\RoboBionics\dashboard code\grippyanalytics-f1bd0a1aaf0c.json")
+    cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "grippyanalytics-f1bd0a1aaf0c.json"))
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
@@ -130,7 +136,6 @@ st.markdown("""
             background-color: #413F42;
             height: 100vh;
         }
-        /* Style Streamlit native containers for graphs */
         [data-testid="stVerticalBlock"] > div[data-testid^="stHorizontalBlock"] > div[data-testid^="stVerticalBlock"] {
             background-color: #D9D9D9;
             border-radius: 2vh;
@@ -145,7 +150,7 @@ st.markdown("""
     <div style="height: 5vh"></div>
     """, unsafe_allow_html=True)
 
-info_row = st.columns([1, 1, 1, 1])
+info_row = st.columns([1, 1, 1, 1, .25])
 
 with info_row[0]:
     if pat_image:
@@ -215,6 +220,16 @@ with info_row[3]:
         </div>
     """, unsafe_allow_html=True)
 
+with info_row[4]:
+    st.markdown(
+        """
+        <div>
+        """,
+        unsafe_allow_html=True
+    )
+    if st.button("Home", key="home_btn", help="Go to patient list", use_container_width=True):
+        st.switch_page("list.py")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("""
     <div style="height:10vh"></div>
@@ -222,7 +237,7 @@ st.markdown("""
 
 
 
-graph_row = st.columns([1,1,1])
+graph_row = st.columns([1,1,1,0.15])
 
 with graph_row[0]:
     cycles = []

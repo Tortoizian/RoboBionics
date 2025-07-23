@@ -143,7 +143,7 @@ if st.session_state['user'] is None:
                 'localId': data.get('localId')
             }
             st.success(f"Login successful! Welcome, {data.get('email')}")
-            st.experimental_rerun()
+            st.switch_page("pages/list.py")
         else:
             error = resp.json().get('error', {}).get('message', 'Login failed')
             st.error(f"Login failed: {error}")
