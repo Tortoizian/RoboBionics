@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 from urllib.parse import parse_qs
-import streamlit as st
 import base64
 
 st.set_page_config(layout="wide")
