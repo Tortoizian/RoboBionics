@@ -4,6 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import json
 import requests
+import os
 
 
 st.set_page_config(layout="wide")
@@ -11,8 +12,10 @@ st.set_page_config(layout="wide")
 
 col1, col_spacer, col_signout = st.columns([1, 5, 1])
 with col1:
-    with open("profile.png", "rb") as img_file:
+    img_path = os.path.join(os.path.dirname(__file__), "..", "profile.png")
+    with open(img_path, "rb") as img_file:
         profile_img_b64 = base64.b64encode(img_file.read()).decode()
+
     st.markdown(f"""
         <div style='margin-top: 1vh; margin-left: 0.2vw;'>
             <div style="border: 0px; padding: 1vh; border-radius: 3vh; height: 20vh; width: 20vh; display: flex; align-items: center; justify-content: center; background-color: #D9D9D9;">

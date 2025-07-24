@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import streamlit.components.v1 as components
 import requests
@@ -24,8 +25,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.container():
-    with open("profile.png", "rb") as img_file:
+    img_path = os.path.join(os.path.dirname(__file__), "..", "profile.png")
+    with open(img_path, "rb") as img_file:
         profile_img_b64 = base64.b64encode(img_file.read()).decode()
+
     st.markdown(f"""
         <div style="height: 10vh"></div>
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
