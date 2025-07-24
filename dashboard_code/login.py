@@ -26,7 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 with st.container():
-    img_path = os.path.join(os.path.dirname(__file__), "..", "profile.png")
+    img_path = os.path.join(os.path.dirname(__file__), "profile.png")
     with open(img_path, "rb") as img_file:
         profile_img_b64 = base64.b64encode(img_file.read()).decode()
 
