@@ -43,10 +43,10 @@ if 'user' not in st.session_state:
 
 if st.session_state['user'] is None:
     firebase_config = {
-        "apiKey": "AIzaSyCB3LoIGAWQGzyRqDfZP0kqa-BACi0wStE",
-        "authDomain": "grippyanalytics.firebaseapp.com",
-        "projectId": "grippyanalytics",
-        "appId": "1:764735496082:web:65169b2aba175c8ff76b4b"
+        "apiKey": st.secrets["firebase"]["apiKey"],
+        "authDomain": st.secrets["firebase"]["authDomain"],
+        "projectId": st.secrets["firebase"]["projectId"],
+        "appId": st.secrets["firebase"]["appId"]
     }
     col = st.columns([1,1,1])
     with col[1]:
@@ -124,7 +124,7 @@ if st.session_state['user'] is None:
 
     if login_btn:
         print("Login button clicked")
-        FIREBASE_API_KEY = "AIzaSyCB3LoIGAWQGzyRqDfZP0kqa-BACi0wStE"
+        FIREBASE_API_KEY = st.secrets["firebase"]["apiKey"]
         FIREBASE_AUTH_URL = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={FIREBASE_API_KEY}"
         payload = {
             "email": email,

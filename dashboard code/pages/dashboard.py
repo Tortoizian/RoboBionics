@@ -7,7 +7,7 @@ import requests
 import datetime
 import matplotlib.pyplot as plt
 import re
-import os
+import json
 
 
 st.set_page_config(layout="wide")
@@ -41,8 +41,10 @@ def days_without_issue(ts):
         return 'N/A'
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "grippyanalytics-f1bd0a1aaf0c.json"))
+    service_account_info = json.loads(st.secrets["firebase_service_account"])
+    cred = credentials.Certificate(service_account_info)
     firebase_admin.initialize_app(cred)
+
 
 db = firestore.client()
 

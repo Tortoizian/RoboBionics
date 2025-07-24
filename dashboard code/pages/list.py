@@ -2,7 +2,7 @@ import streamlit as st
 import base64
 import firebase_admin
 from firebase_admin import credentials, firestore
-import os
+import json
 import requests
 
 
@@ -25,9 +25,12 @@ with col_signout:
         st.session_state.clear()
         st.switch_page("login.py")
 
+
 if not firebase_admin._apps:
-    cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "grippyanalytics-f1bd0a1aaf0c.json"))
+    service_account_info = json.loads(st.secrets["firebase_service_account"])
+    cred = credentials.Certificate(service_account_info)
     firebase_admin.initialize_app(cred)
+    
 db = firestore.client()
 st.markdown("""
     <style>
