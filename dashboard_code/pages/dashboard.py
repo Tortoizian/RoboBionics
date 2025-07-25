@@ -7,8 +7,6 @@ import requests
 import datetime
 import matplotlib.pyplot as plt
 import re
-import json
-
 
 st.set_page_config(layout="wide")
 
@@ -41,8 +39,7 @@ def days_without_issue(ts):
         return 'N/A'
 
 if not firebase_admin._apps:
-    service_account_info = json.loads(st.secrets["firebase_service_account"])
-    cred = credentials.Certificate(service_account_info)
+    cred = credentials.Certificate(dict(st.secrets["firebase_service_account"]))
     firebase_admin.initialize_app(cred)
 
 
