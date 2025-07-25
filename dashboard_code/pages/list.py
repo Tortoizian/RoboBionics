@@ -2,7 +2,6 @@ import streamlit as st
 import base64
 import firebase_admin
 from firebase_admin import credentials, firestore
-import json
 import requests
 import os
 
@@ -30,8 +29,7 @@ with col_signout:
 
 
 if not firebase_admin._apps:
-    service_account_info = json.loads(st.secrets["firebase_service_account"])
-    cred = credentials.Certificate(service_account_info)
+    cred = credentials.Certificate(dict(st.secrets["firebase_service_account"]))
     firebase_admin.initialize_app(cred)
     
 db = firestore.client()
